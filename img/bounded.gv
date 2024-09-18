@@ -1,0 +1,84 @@
+# Place the cursor inside "graph" to get some refactoring options
+
+graph {
+    node [shape=point];
+    rankdir=BT;
+
+    // {
+    //     rank=same;
+    //     unit; root1; root2; root3
+    // }
+    //unit--root1--root2--root3 [style=invis];
+
+    subgraph cluster_dc0{
+        label = "DC0";
+        unit
+    }
+
+    subgraph cluster_dc1{
+        label = "DC1";
+        
+        root1 -- en;
+
+        en [shape=circle,label="n"];
+    }
+
+    subgraph cluster_dc2{
+        label = "DC2";
+        
+        root2 -- c0;
+        c0 [shape=circle, label="c0"];
+
+        root2 -- c1--p1;
+        c1 [shape=circle, label="c1"];
+
+        root2 -- c2--p2;
+        c2 [shape=circle, label="c2"];
+        p2 [shape=circle, label="2"];
+
+        root2 -- c3--p3;
+        c3 [shape=circle, label="c3"];
+        p3 [shape=circle, label="3"];
+
+        root2--ell2;
+
+        ell2 [shape=none, label="..."]
+    }
+
+    subgraph cluster_dc3{
+        label = "DC3"
+        root3;
+
+        root3--a0;
+        a0 [shape=square, label="α0"]
+
+        root3--a1--q1--t1;
+        a1 [shape=square, label="α1"]
+
+        root3--a2--q2--t2;
+        a2 [shape=square, label="α2"]
+        t2 [shape=circle, label="2"]
+
+        root3--a3--q3--t3;
+        a3 [shape=square, label="α3"]
+        t3 [shape=circle, label="3"]
+
+        root3--ell3_s;
+        ell3_s[shape=none, label="..."];
+
+        root3--b1;
+        b1 [shape=square, label="β2"];
+        b1--l1--h1;
+        l1 [shape=circle, label="2"]
+
+        root3--b2;
+        b2 [shape=square, label="β3"];
+        b2--l2--h2;
+        l2 [shape=circle, label="3"]
+
+        root3--ell3_f;
+        ell3_f[shape=none, label="..."];
+    }
+
+    
+}

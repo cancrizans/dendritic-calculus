@@ -266,6 +266,7 @@ $$
 Graphically, something like this (circle with label $n$ means the child is cloned $n$ times):
 
 ![](img/bf_state.png)
+
 *Brainfuck tape embedded into a dendron*
 
 ## Increment and decrement
@@ -379,6 +380,9 @@ In DC2, the state is a dendron $\xi < [[1]]$, which is to say $\xi = n_0 + n_1 [
 
 DC3 has *at least* an infinite buffer of such infinite buffers, namely $\xi = \alpha_0 + \alpha_1 [[1]] + \alpha_2 [2[1]] + \ldots$ where each $\alpha_i$ is a DC2 state (There's more actually, since $[[2]]\neq [2[1]]$). This is a lot of space -- just three buffers, $(\alpha_0,\alpha_1,\alpha_2)$ are all we need to comfortably embed an infinite addressable tape, as we've seen in the brainfuck conversion. 
 
+![](img/bounded.png)
+
+*General state in bounded dendritic calculus. For DC3, The square nodes mean that branch is multiplied by a corresponding DC2 state.*
 
 Note that this means that the exponential function $\xi \rightarrow [\xi]$ cannot be implemented by a DC program, since we could iterate it to achieve arbitrarily large depth:
 
