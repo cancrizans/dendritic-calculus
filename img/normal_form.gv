@@ -1,0 +1,33 @@
+# Place the cursor inside "graph" to get some refactoring options
+
+graph {
+
+    subgraph{
+        node [shape=point];
+
+        a--b--c--d;
+        c--e;
+        c--f;
+
+        a--B--C--D;
+        C--E;
+        C--F
+
+        a--z;
+    }
+
+    subgraph{
+        node [shape=point];
+        
+
+        a2--b2;
+        b2 [shape=circle, label="2"];
+
+        a2--z2;
+        b2--c2;
+        
+        c2--d2;
+
+        d2 [shape=circle, label="3"]
+    }
+}

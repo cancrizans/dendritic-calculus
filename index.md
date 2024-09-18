@@ -32,6 +32,12 @@ $$
 
 We call this **normal form**. If we continue writing also the children in normal form, and so on until we terminate, we are able to write any dendron in terms of a compact, finite expression involving only the ASCII symbols `[]+` and the digits `0-9`; this is the grammar used to express dendron literals in DC.
 
+In the graphical equivalent of normal form, we represent duplicate children with a circle with the number of copies. For example the following dendrons are the same:
+
+![](img/normal_form.png)
+
+
+
 ### Order
 
 There is a a natural total order on dendrons: for two dendrons $\alpha$ and $\beta$ either one is bigger, or they are identical. This order can be defined through these properties:
