@@ -380,7 +380,7 @@ Note that a DC program cannot get the register to a depth greater than the depth
 
 DC0, dendritic calculus bounded to depth 0, has only one state, $0$, and no way to change it.
 
-DC1 is a very simple language. It only has one integer register $n$ and can do some arithmetic operations on it. Since the only branching instruction can only take the "break loop" branch if all the data is zeroed out, this is not Turing-complete.
+DC1 is a very simple language. It only has one integer register $n$ and can do some arithmetic operations on it. Since the only branching instruction can only take the "break loop" branch if all the data is zeroed out, this is not Turing-complete. DC1 really loses on a technicality - if it was able to branch, integer division is computationally very strong.
 
 In DC2, the state is a dendron $\xi < [[1]]$, which is to say $\xi = n_0 + n_1 [1] + n_2 [2] + \ldots$. We thus have one arbitrarily large buffer of integers, and moreover the `{...}` loop does not need to wipe all the memory to branch. While it is a bit cramped, I'm fairly certain this is Turing-complete, though I'm too lazy to conjure up a proof.
 
