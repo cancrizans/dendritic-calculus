@@ -1,3 +1,7 @@
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
 **Dendritic Calculus** is an esoteric programming language with one single register whose value is an unlabeled rooted tree. No other memory is available. Only two arithmetic operations may be applied in place to the register, plus a simple control loop. Nevertheless, it is Turing complete.
 
 # Dendrons
