@@ -1,0 +1,9 @@
+; n |-> 1+2+...+n
+
++= 1 {                  ; for finite in n..=0
+    {+= [2[1]]}          
+    / [2[1]] > [1]+1    ; clone value
+    {+= [[1]]}          ; add copy to accumulator
+    / [1] > 1           ; restore copy, keep accumulator
+}
+/ [[1]] > 1         ; output

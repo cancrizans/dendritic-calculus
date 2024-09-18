@@ -1,0 +1,46 @@
+# Place the cursor inside "graph" to get some refactoring options
+
+graph {
+     node[shape=point];
+     fontsize = "6pt";
+
+    
+    root -- finite;
+    finite[label="c", shape="circle"]
+
+    root -- omega;
+    omega[label="r1",shape="circle"]; 
+    omega--mul1;
+
+
+    root -- m2omega ; 
+    m2omega[label="r2",shape="circle"];
+    m2omega--mul2;
+    m2omega--mul2b;
+
+    root -- m3omega; 
+    m3omega[label="r3",shape="circle"];
+    m3omega--mul3;
+    m3omega--mul3b;
+    m3omega--mul3c;
+
+
+
+    root -- crud ;
+    crud[label="l1",shape="circle"];
+    crud -- bro -- crap;
+
+    root -- crud2;
+    crud2[label="l2",shape="circle"];
+    crud2 -- bro2;
+    bro2 -- crap2;
+    crud2 -- dupe;
+
+    root -- crud3;
+    crud3[label="l3",shape="circle"];
+    crud3 -- bro3;
+    bro3 -- crap3;
+    crud3 -- dupe3;
+    crud3 -- dupe33;
+
+}
