@@ -9,7 +9,9 @@
       };
 </script>
 
-**Dendritic Calculus** is an esoteric programming language with one single register whose value is an unlabeled rooted tree. No other memory is available. Only two arithmetic operations may be applied in place to the register, plus a simple control loop. Nevertheless, it is Turing complete.
+**Dendritic Calculus** is an [esoteric programming language](https://esolangs.org/wiki/Main_Page) with one single register whose value is an unlabeled rooted tree. No other memory is available. Only two arithmetic operations may be applied in place to the register, plus a simple control loop. Nevertheless, it is Turing complete.
+
+DC is influenced by [FRACTRAN](https://en.wikipedia.org/wiki/FRACTRAN) and the [Iota and Jot](https://en.wikipedia.org/wiki/Iota_and_Jot) languages. It also is probably strongly related to [counter machines](https://en.wikipedia.org/wiki/Counter_machine).
 
 # Dendrons
 
@@ -63,7 +65,7 @@ This is a well-ordering, meaning any collection of dendrons has a least element.
 
 ### Mathematical Detail
 
-These finite rooted trees are better known in mathematics as ordinal numbers (specifically, they are ordinals $<\varepsilon_0$). The addition and multiplication operations are not the standard ordinal operations, but rather Hessenberg's "natural sum" $\oplus$ and "natural product" $\otimes$, which are indeed commutative, associative and distributive. The correspondence is this:
+These finite rooted trees are just ordinal numbers (specifically, they are ordinals $<\varepsilon_0$). However, the addition and multiplication operations are not the standard ordinal operations, but rather Hessenberg's "natural sum" $\oplus$ and "natural product" $\otimes$, which are indeed commutative, associative, distributive and increasing monotonic (but not continuous). The correspondence is this:
 
 | Dendritic | Ordinal |
 | --- | --- |
@@ -72,9 +74,9 @@ These finite rooted trees are better known in mathematics as ordinal numbers (sp
 | $α+β$ | $\alpha \oplus \beta$ |
 | $αβ$ | $\alpha \otimes \beta$ |
 
-For ease of typing and legibility, I'll use the custom notation on the left and keep calling these dendrons.
+For ease of typing and legibility, and I guess for the rule of cool, I'll use the custom notation on the left and keep calling these dendrons.
 
-I've also resisted the temptation to allow a shorthand like $\omega$ or `w` for $[1]$, since it makes much of the algebra harder to follow.
+I've also resisted the temptation to allow a shorthand like $\omega$ or `w` for $[1]$, since it makes much of the algebra harder to follow; e.g., I think $[1] \cdot [1] = [2]$ is easier to understand than $\omega \cdot \omega = [2]$.
 
 # Programs
 
@@ -88,6 +90,10 @@ A program is a sequence of operations that are applied to ξ in place. The instr
 | **Division-Substitution** | $\pi$, $\sigma$ | Match a pattern $\pi$ within $ξ$ and replace with $\sigma$ (sorta). |
 | **Prune Loop** | `<code block>` | While it is possible to do so, decrement $ξ$ and execute a block of code. |
 
+By default, the state is initialized as $\xi=0$. 
+
+There are no special provisions for I/O, only the initial and final states exist. If input is defined, it can be passed in some encoding into the initial value of the register with some (arbitrary) convention relating to the type. A single integer $n$ is directly the dendron $n$, while a list of number could be passed in as the coefficients of $1$, $[1]$, $[2]$, etc. The same is true for the output.
+
 
 ## Increment
 
@@ -96,8 +102,6 @@ To add a constant dendron to the register, $ξ \leftarrow ξ + κ$, we can write
 ```
 += κ
 ```
-
-That's it!
 
 ## Division-Substitution
 
@@ -135,7 +139,7 @@ $$
 \end{cases}
 $$
 
-Another example speaks for a thousand definitions. Consider the register in state:
+Bla bla bla, let's see an example. Consider the register in state:
 
 $$
     \xi = 3 \big[[1]+1\big] + 5 \big[[1]\big] + 7[2] + 3[1] + 8
@@ -196,6 +200,8 @@ It is also possible to implement the exponential on naturals $n \mapsto [n]$ lik
 / [[1]] > 1          
 ```
 
+I'll leave decrypting this one to you.
+
 ## Syntax
 
 Dendritic calculus programs are written in ASCII using the following character set:
@@ -204,11 +210,11 @@ Dendritic calculus programs are written in ASCII using the following character s
 - `[]+0123456789` for dendron literals ()
 - `{}` for prune loops
 
-whitespace is ignored. It is not necessary to introduce any symbols for variables since DC is "point-free programming" in the ridiculous sense that there is only one register, so it's useless to mention it.
+whitespace is ignored. It is not necessary to introduce any symbols for variables since DC is "point-free programming" in the ridiculous sense that there is only one register, so there's no addressing to speak of.
 
 Due to the influence of assembly, we also allow comments between `;` and a newline.
 
-After stripping comments and ignoring whitespace, the grammar is unambiguous:
+<!-- After stripping comments and ignoring whitespace, the grammar is unambiguous:
 
 ```
 program := command*
@@ -221,7 +227,7 @@ literal :=  term ("+" term)+
 term    :=  (pos_nat)? exp
 pos_nat :=  ("1".."9")("0"-"9")*
 exp     :=  "0" | "1" | "[" literal "]"
-```
+``` -->
 
 # Sample Programs
 
@@ -244,7 +250,7 @@ This computes the $n$-th triangular number, $n \mapsto 1+2+\ldots+n$.
 
 It is possible to transpile a brainfuck program to Dentritic Calculus, which proves that the latter is Turing complete. Specifically, we will realize bf with a doubly infinite memory tape with unbounded cells.
 
-
+There's probably easier Turing-complete systems to reduce to (probably Minsky machines, for example), and better proofs than this one that use smaller dendrons, but this is the first I found and it works fine.
 
 ## Encoding State
 
