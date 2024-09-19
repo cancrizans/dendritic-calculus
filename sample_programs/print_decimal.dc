@@ -1,0 +1,9 @@
+; unfinished
+; input n
+
+/1 > [[1]]
++= 1{
+    {}
+    /10[[1]] > [[2]]    ; in-place mod, quotient to [[2]]
+    /[[2]] > [[1]+1] + 1 ; quotient back home and copy finite    
+}

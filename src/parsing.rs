@@ -9,14 +9,16 @@ use pest::{iterators::Pair, Parser};
 #[derive(Debug)]
 pub enum Error{
     PestError(pest::error::Error<Rule>),
-    IntParsingError(ParseBigIntError)
+    IntParsingError(ParseBigIntError),
+    DivisionByZero,
 }
 
 impl Display for Error{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self{
             Error::PestError(pe) => write!(f,"Pest parsing error: {}",pe),
-            Error::IntParsingError(pbie) => write!(f,"{}",pbie) 
+            Error::IntParsingError(pbie) => write!(f,"{}",pbie) ,
+            Error::DivisionByZero => write!(f,"Division by zero-pattern."),
         }
     }
 }
@@ -109,8 +111,11 @@ fn parse_instruction(pair : Pair<Rule>) -> Result<Instruction,Error>{
                 ),
                 Rule::divsub => {
                     let mut instr_pair = instr_pair.into_inner();
-                    Instruction::Divsub { divisor: 
-                        parse_literal(instr_pair.next().unwrap())?, 
+                    let divisor = parse_literal(instr_pair.next().unwrap())?;
+                    if divisor.is_zero() {
+                        return Err(Error::DivisionByZero)
+                    }
+                    Instruction::Divsub { divisor, 
                         replacement: 
                         parse_literal(instr_pair.next().unwrap())? }
                 },

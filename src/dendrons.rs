@@ -163,10 +163,14 @@ impl Dendron{
     }
 
     pub fn from_int(n : BigUint) -> Dendron{
-        let mut terms = BTreeMap::new();
-        let _ = terms.insert(Exp::one(),n);
-        Dendron{
-            terms
+        if n.is_zero() {
+            Dendron::zero()
+        } else {
+            let mut terms = BTreeMap::new();
+            let _ = terms.insert(Exp::one(),n);
+            Dendron{
+                terms
+            }
         }
     }
 
