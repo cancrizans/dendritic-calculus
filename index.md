@@ -231,6 +231,8 @@ exp     :=  "0" | "1" | "[" literal "]"
 
 # Sample Programs
 
+## Triangular numbers
+
 This computes the $n$-th triangular number, $n \mapsto 1+2+\ldots+n$. 
 
 ```
@@ -244,6 +246,26 @@ This computes the $n$-th triangular number, $n \mapsto 1+2+\ldots+n$.
 / [[1]] > 1         ; output
 ```
 
+## Decimal digits
+
+This unpacks a natural number $n$ into a list of decimal digits (in fact, it works for any base):
+
+```
+; takes an integer as input
+; returns buffer of decimal digits
+
+/1 > [[1]] + [[2]]      ; put number in digits buffer [[1]] and last quotient [[2]]
++= 1{{}                 ; loop until flag zero
+    /10 > [1]           ; shift-divide both digits and lq
+    
+    /[[2]+1] > [[3]]    ; temp stash lq/10
+    /[[2]] > 0          ; discard lq%10
+    /[[3]] > [[2]]      ; put lq <- lq/10
+
+    /[[2]] > [[2]]+1    ; copy lq to flag
+}
+/[[1]] > 1              ; clean up digits buffer to finite
+```
 
 
 # Turing Completeness Proof
