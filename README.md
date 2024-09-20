@@ -6,7 +6,7 @@ Despite the limitations, it is Turing-Complete.
 
 See the [language reference](https://cancrizans.github.io/dendritic-calculus) for details.
 
-## Interpreter
+## CLI Interpreter
 
 This repository includes a compiler-interpreter for DC written in Rust.
 
@@ -20,3 +20,4 @@ $ cargo run sample_programs/add_one.dc 5[[1]]+7
 5[[1]]+8
 ```
 
+The interpreter has a few more options, add `--help`.

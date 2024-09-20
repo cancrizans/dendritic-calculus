@@ -1,8 +1,6 @@
-# Place the cursor inside "graph" to get some refactoring options
-
 graph {
     
-    # To refactor nodes, place the cursor left to a node name
+    rankdir=BT;
     node[shape=point]
     
     subgraph cluster0{

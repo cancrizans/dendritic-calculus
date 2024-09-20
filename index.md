@@ -406,7 +406,7 @@ BF_MOVE_LEFT
 SWAP
 ```
 
-### Brackets
+## Brackets
 
 The bf `[]` operator is relatively similar to dendritic `{}`, the only difference is it doesn't automatically decrement. We can correct this by incrementing again. The bf code `[<code_block>]` converts to
 
@@ -417,9 +417,13 @@ The bf `[]` operator is relatively similar to dendritic `{}`, the only differenc
 }
 ```
 
+## Conclusion
+
+We have converted bf to DC, therefore the latter is Turing-complete. Combined with the self-evident theorem that dendritic calculus is horrible to program in, I can proudly confirm its status as a [Turing tarpit](https://esolangs.org/wiki/Turing_tarpit).
+
 # Boundedness
 
-Note that a DC program cannot get the register to a depth greater than the depth of the constants in the program. If the depth of the constants is at most $d$, then we are really limited to the much smaller state space of dendrons of depth $<=d$.
+A DC program cannot get the register to a depth greater than the depth of the constants in the program. If the depth of the constants is at most $d$, then we are really limited to the much smaller state space of dendrons of depth $<=d$.
 
 DC0, dendritic calculus bounded to depth 0, has only one state, $0$, and no way to change it.
 
@@ -528,3 +532,48 @@ $$
 $$
 
 with no remainders.
+
+## Interpreting/Compilation and Optimization
+
+Dendritic calculus is very inefficient to implement on a regular computer. Trees are just fundamentally nasty objects, especially when they are nested one inside the other as exponents and have to be manipulated. My interpreter really has to be a bit of a compiler if it wants to have a chance, and with some cleverness, programs do run at an almost bearable pace.
+
+I think the best representation of a dendron is in normal form as a sorted map from exponents (which are dendrons themselves) to their coefficients, which are integers (I used `BigUint`, but for most cases even `u64` would do). So, I need to store:
+
+$$
+\xi = c_0 [\beta_0] + c_1 [\beta_1] + \ldots + c_n [\beta_n]
+$$
+
+where the $\beta_i$ are themselves dendrons, and could be pretty much anything. I need some kind of (recursive) data structure that can quickly give me the $\beta_i$ in order (both decreasing and increasing), let me query if a given $[\beta_i]$ is present and with which coefficient, and let me mutate those coefficients just as quickly. Rust's `BTreeMap` seems like the correct choice. Because of all the nested indirection, dendrons are rather large, sprawling brambles in memory, but this doesn't really matter since dendritic calculus only really ever needs to work with two or three of them at a time.
+
+The first obvious optimization, slash, compilation step is to just pre-compute the constant dendrons that appear in instructions. This came more or less free with the design of the interpreter, but I don't think it really is that life-changing; it does help for instructions inside loops. I'm fairly certain the biggest win here is in the overhead of memory allocation.
+
+You might also think to do obvious shifting window stuff with addition and multiplication like this:
+
+| instructions | optimized |
+| -- | -- |
+| `+=κ +=γ` | `+=(κ+γ)` |
+| `+=κ /1>μ +=γ` | `/1>μ +=(μ*κ+γ)` |
+
+and so on and so forth, but in practice these are pretty rare. The programmer is already deep enough in the tarpit that they're not gonna write any of these anyway.
+
+There are some common patterns that are the only or most obvious way to achieve something but are just really slow to execute. For example, this code
+
+```
+{+=[[1]]}
+```
+
+is the best way to transfer the finite part of the register to the coefficient of $[[1]]$ without clobbering anything else, but it requires stepping through as many iterations as the *value that's being transferred*, rendering this simple move operation a whopping $\mathcal{O}(e^n)$. I secretly compile this code to a single $\mathrm{mvf}([[1]])$ (move finite) instruction.
+
+There is also some very basic infinite loop detection, for example
+
+```
+{+=1}
+```
+
+won't actually loop forever, but will instead crash as it has detected the obvious infinite loop. But a sightly more complex trap can fool it:
+
+```
+{ +=[1]  /[1]>1 }
+```
+
+It seems like [infinite loop detection is not that easy](https://en.wikipedia.org/wiki/Halting_problem), somehow.

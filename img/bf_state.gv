@@ -1,6 +1,7 @@
 # Place the cursor inside "graph" to get some refactoring options
 
 graph {
+    
      node[shape=point];
      fontsize = "6pt";
 

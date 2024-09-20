@@ -2,6 +2,7 @@
 
 graph {
 
+    rankdir = BT;
     subgraph{
         node [shape=point];
 
