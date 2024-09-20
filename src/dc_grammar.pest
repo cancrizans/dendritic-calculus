@@ -15,6 +15,6 @@ prune = {"{" ~ block ~ "}"}
 literal = { term ~ ("+" ~ term)* }
 term = _{monomial | nat | exp }
 monomial = {nat ~ exp}
-exp = {"[" ~ literal ~ "]"}
+exp = {"[" ~ literal? ~ "]"}
 
 nat = @{ASCII_DIGIT+}

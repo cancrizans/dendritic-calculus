@@ -1,9 +1,21 @@
+
+
+use std::fmt::Display;
+
 use super::dendrons::Dendron;
 use super::parsing::{CodeBlock,Instruction};
 
 #[derive(Debug)]
 pub enum ExecutionError{
+    InfiniteLoop
+}
 
+impl Display for ExecutionError{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self{
+            ExecutionError::InfiniteLoop => write!(f,"Infinite loop detected.")
+        }
+    }
 }
 
 pub struct Interpreter{
@@ -39,7 +51,13 @@ impl Interpreter{
                 while let Some(()) = self.xi.try_decrement(){
                     self.execute(block)?
                 }
-            }
+            },
+            Instruction::MoveFinite(destination) => {
+                self.xi.move_finite(destination)
+            },
+            Instruction::InfLoopNZ => if let Some(()) = self.xi.try_decrement(){
+                Err(ExecutionError::InfiniteLoop)?
+            } else {()}
         };
         Ok(())
     }

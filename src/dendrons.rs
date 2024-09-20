@@ -1,4 +1,6 @@
+use std::collections::HashMap;
 use std::{collections::BTreeMap, fmt::Display};
+use clap::builder::Str;
 use num_bigint::BigUint;
 use num_traits::{One, Zero};
 use std::cmp::{Ord,Ordering};
@@ -36,6 +38,16 @@ impl Exp{
         if let Some(delta) = self.0.try_subtract(&divisor.0){
             Some(Exp(delta))
         } else {None}
+    }
+
+    fn as_tex(&self) -> String{
+        if self.0.is_zero(){
+            "1".to_string()
+        } else if self.0 == Dendron::exp(Dendron::zero()) {
+            r"\omega".to_string()
+        } else {
+            format!(r"\omega^{{{}}}",self.0.as_tex())
+        }
     }
 }
 
@@ -97,7 +109,15 @@ impl Dendron{
     pub fn is_zero(&self) -> bool{
         self.terms.len() == 0
     }
-    
+
+    pub fn is_one(&self) -> bool{
+        if self.terms.len() != 1 {
+            false
+        } else {
+            self.terms.first_key_value().unwrap()
+            == (&Exp::one(),&BigUint::one())
+        }
+    }
 
     
     #[allow(dead_code)]
@@ -277,6 +297,80 @@ impl Dendron{
         } else {
             None
         }
+    }
+
+    pub fn move_finite(&mut self, destination : &Dendron){
+        assert!(!destination.terms.contains_key(&Exp::one()));
+        let multiplier = 
+            if let Some(v) = self.terms.remove(&Exp::one())
+            {v} else {
+                return
+            };
+        if !destination.is_zero(){
+            self.add_assign(
+                &Dendron::scale(
+                    destination.clone(),
+                    multiplier)
+            );
+        }
+    }
+
+    fn as_finite(&self) -> Option<BigUint>{
+        if self.is_zero() {
+            return Some(BigUint::zero())
+        }
+        for (e,c) in self.terms.iter(){
+            if e.is_one(){
+                return Some(c.clone());
+            };
+            return None
+        };
+        unreachable!()
+        
+    }
+
+    pub fn as_c_str(&self) -> Option<String>{
+        
+        let mut char_map : HashMap<usize, u8> = HashMap::new();
+        for (e,c) in self.terms.iter(){
+            match e.0.as_finite(){
+                Some(n_bu) => {
+                    if let Ok(c) = c.try_into(){
+                        let n : usize = n_bu.try_into().unwrap();
+                        char_map.insert(n, c);
+                    } else {
+                        return None;
+                    }
+                },
+                None => return None
+            }
+        };
+
+        let mut buffer = Vec::new();
+        char_map.iter().for_each(|(idx, val)|{
+            while buffer.len() < idx+1 {
+                buffer.push(0);
+            }
+            buffer[*idx] = *val;
+        });
+
+        std::str::from_utf8(&buffer).ok()
+        .map(|s|s.to_owned() )
+
+    }
+
+    pub fn as_tex(&self)->String{
+        if self.is_zero(){ return "0".to_owned()};
+
+        self.terms.iter().map(|(e,c)|{
+            if e.is_one(){
+                c.to_string()
+            } else if c.is_one() {
+                e.as_tex()
+            } else{
+                format!("{}{}",c.to_string(),e.as_tex())
+            }
+        }).join("+")
     }
 }
 

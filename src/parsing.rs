@@ -34,6 +34,10 @@ impl From<ParseBigIntError> for Error{
     }
 }
 
+trait Optimization{
+    fn optimize(self) -> Self;
+}
+
 
 #[derive(Parser)]
 #[grammar = "dc_grammar.pest"]
@@ -45,12 +49,32 @@ impl CodeBlock{
     pub fn instructions(&self) -> &Vec<Instruction>{
         &self.0
     }
+
+    pub fn as_tex(&self) -> String{
+        format!("{}",
+            self.as_tex_inner(0)
+        )
+    }
+    pub fn as_tex_inner(&self, indent : usize) -> String{
+        let prefix : String = (0..indent*4).map(|_|' ').collect();
+        self.instructions().iter().map(|i|
+                format!(r"{}* {}",prefix,i.as_tex(indent))
+            ).join("\n")
+    }
 }
 impl Display for CodeBlock{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f,"{}",self.0.iter().join(", "))
     }
 }
+impl Optimization for CodeBlock{
+    fn optimize(self) -> Self {
+        CodeBlock(
+            self.0.into_iter().map(|i|i.optimize()).collect()
+        )
+    }
+}
+
 
 #[derive(Debug)]
 pub enum Instruction{
@@ -59,7 +83,36 @@ pub enum Instruction{
         divisor : Dendron,
         replacement : Dendron
     },
-    Prune(CodeBlock)
+    Prune(CodeBlock),
+    MoveFinite(Dendron),
+    InfLoopNZ,
+}
+
+impl Instruction{
+    fn as_tex(&self, indent : usize) -> String{
+        match self{
+            Instruction::Add(k) => format!(r"$\xi \leftarrow \xi + {}$",k.as_tex()),
+            Instruction::Divsub { divisor, replacement } => 
+                if divisor.is_one(){
+                    format!(r"$\xi \leftarrow (\xi \cdot {})$",replacement.as_tex())
+                } else {
+                    format!(r"$\xi \leftarrow \xi \Big/ \left({} \rightarrow {}\right) $", divisor.as_tex(),replacement.as_tex())
+                },
+            Instruction::InfLoopNZ => r"if $\xi = \alpha + 1$, infinite loop".to_string(),
+            Instruction::MoveFinite(dest) => if dest.is_zero(){
+                format!(r"$\xi \leftarrow \lfloor \xi \rfloor$")
+            }else {
+                format!(r"\xi \leftarrow \lfloor \xi \rfloor + \operatorname{{finite}}(\xi) \cdot \left({}\right)$",dest.as_tex())
+            },
+            Instruction::Prune(block) => {
+                
+                format!("while $\\xi = \\alpha + 1$: do $\\xi \\leftarrow \\alpha$ \n{}",
+                    block.as_tex_inner(indent+1)
+                )
+            }
+
+        }
+    }
 }
 
 impl Display for Instruction{
@@ -67,7 +120,42 @@ impl Display for Instruction{
         match self{
             Instruction::Add(k) => write!(f,"+= {}",k),
             Instruction::Divsub { divisor, replacement } => write!(f,"/ {} > {}",divisor,replacement),
-            Instruction::Prune(block) => write!(f,"{{{}}}", block)
+            Instruction::Prune(block) => write!(f,"{{{}}}", block),
+            Instruction::MoveFinite(destination) => write!(f,"mvf({})",destination),
+            Instruction::InfLoopNZ => write!(f,"lnz"),
+        }
+    }
+}
+
+fn optimize_prune(inner : CodeBlock) -> Instruction{
+    use Instruction as I;
+    match inner.instructions().len(){
+        0 => I::MoveFinite(Dendron::zero()),
+
+        1 => match &inner.instructions()[0]{
+            I::Add(k) => {
+                match k.clone().try_decrement(){
+
+                    Some(..) => I::InfLoopNZ,
+                    None => I::MoveFinite(k.clone())
+                }
+
+
+            }//,
+            _ => I::Prune(inner.optimize())
+        },
+        _ => I::Prune(inner.optimize())
+    }
+}
+
+impl Optimization for Instruction{
+    fn optimize(self) -> Self {
+        use Instruction as I;
+        match self{
+            I::Prune(block) => {
+                optimize_prune(block)
+            }
+            _ => self,
         }
     }
 }
@@ -86,8 +174,12 @@ fn parse_literal(pair : Pair<Rule>) -> Result<Dendron,Error>{
             Dendron::mul(multiplier,exp)
         },
         Rule::exp => {
-            let inner = pair.into_inner().next().unwrap();
-            Dendron::exp(parse_literal(inner)?)
+            if let Some(inner) = pair.into_inner().next(){
+                Dendron::exp(parse_literal(inner)?)
+            } else {
+                Dendron::exp(Dendron::zero())
+            }
+
         },
         Rule::literal => {
             let terms : Result<Vec<Dendron>,Error> = pair.into_inner()
@@ -154,5 +246,5 @@ pub fn parse_dc_source(src : &str) -> Result<CodeBlock,Error>{
     assert_eq!(pairs.len(),1);
     let pair = pairs.next().unwrap();
 
-    parse_block(pair)
+    Ok(parse_block(pair)?.optimize())
 }

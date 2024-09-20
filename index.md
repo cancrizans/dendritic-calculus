@@ -248,7 +248,7 @@ This computes the $n$-th triangular number, $n \mapsto 1+2+\ldots+n$.
 
 ## Decimal digits
 
-This unpacks a natural number $n$ into a list of decimal digits (in fact, it works for any base):
+This unpacks a natural number $n$ into a list of decimal digits (or any base, by replacing 10):
 
 ```
 ; takes an integer as input
@@ -265,6 +265,27 @@ This unpacks a natural number $n$ into a list of decimal digits (in fact, it wor
     /[[2]] > [[2]]+1    ; copy lq to flag
 }
 /[[1]] > 1              ; clean up digits buffer to finite
+```
+
+Same program as a procedure on ordinals, starting from $\xi \leftarrow n$:
+
+* $\xi \leftarrow (\xi \cdot \omega^{\omega}+\omega^{\omega^{2}})$
+* $\xi \leftarrow \xi + 1$
+* while $\xi = \alpha + 1$: do $\xi \leftarrow \alpha$
+    * $\xi \leftarrow \lfloor \xi \rfloor$
+    * $\xi \leftarrow \xi \Big/ \left(10 \rightarrow \omega\right) $
+    * $\xi \leftarrow \xi \Big/ \left(\omega^{1+\omega^{2}} \rightarrow \omega^{\omega^{3}}\right) $
+    * $\xi \leftarrow \xi \Big/ \left(\omega^{\omega^{2}} \rightarrow 0\right) $
+    * $\xi \leftarrow \xi \Big/ \left(\omega^{\omega^{3}} \rightarrow \omega^{\omega^{2}}\right) $
+    * $\xi \leftarrow \xi \Big/ \left(\omega^{\omega^{2}} \rightarrow 1+\omega^{\omega^{2}}\right) $
+* $\xi \leftarrow \xi \Big/ \left(\omega^{\omega} \rightarrow 1\right) $
+
+## Hello, world! (No digits)
+
+It's too easy to make a "Hello, world!" program in standard DC. Here's a version without using any digits:
+
+```
+/[]>[]+[]+=[]+[[]]+[[]+[]]+[[]+[]+[]]+[[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]>[]+[]+=[[]]+[[]+[]]+[[]+[]+[]]+[[]+[]+[]+[]]+[[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]>[]+[]+=[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]>[]+[]+=[]+[[]+[]]+[[]+[]+[]]+[[]+[]+[]+[]]+[[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]>[]+[]+=[[]]+[[]+[]]+[[]+[]+[]]+[[]+[]+[]+[]]+[[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]>[]+[]+=[[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]>[]+[]+=[[]]+[[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]
 ```
 
 
