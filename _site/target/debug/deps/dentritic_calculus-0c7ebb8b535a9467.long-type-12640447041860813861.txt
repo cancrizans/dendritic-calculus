@@ -1,0 +1,1 @@
+itertools::Product<std::collections::btree_map::IntoIter<dendrons::Exp, num_bigint::BigUint>, std::collections::btree_map::IntoIter<dendrons::Exp, num_bigint::BigUint>>

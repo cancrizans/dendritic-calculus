@@ -1,0 +1,2 @@
+; if input is 0, return 0, If it's 1, loop forever.
+{+=1}

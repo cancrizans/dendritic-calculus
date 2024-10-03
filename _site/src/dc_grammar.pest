@@ -1,0 +1,20 @@
+COMMENT = _{ ";" ~ (!"\n" ~ ANY)* }
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
+eoi = _{ !ANY }
+
+program = _{SOI ~ block ~ eoi}
+
+block = { instruction* }
+
+instruction = {add | divsub | prune }
+
+add = {"+=" ~ literal}
+divsub = {"/" ~ literal ~ ">" ~ literal}
+prune = {"{" ~ block ~ "}"}
+
+literal = { term ~ ("+" ~ term)* }
+term = _{monomial | nat | exp }
+monomial = {nat ~ exp}
+exp = {"[" ~ literal? ~ "]"}
+
+nat = @{ASCII_DIGIT+}

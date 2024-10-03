@@ -1,0 +1,44 @@
+# Place the cursor inside "graph" to get some refactoring options
+
+graph {
+
+    node [shape = point];
+
+    subgraph cluster_bro{
+        label="[1] + [[1]+1]";
+        root [color=brown];
+        g1 [color=brown];
+        g2 [color=brown];
+
+        root--g1--g2 [color=brown];
+
+        root--m1 [color=brown];
+        m1--m2--m3 [color=forestgreen];
+
+        m2 [color=forestgreen];
+        m3 [color=forestgreen]
+
+        m1 [color=brown];
+        s1 [color=brown];
+
+        m1--s1 [color=brown];
+    }
+
+    subgraph cluster_divisor{
+        label="[1]";
+        boot -- goot -- fruit;
+    }
+
+    subgraph cluster_quotient{
+        label="2";
+        sig -- big;
+        sig -- tig;
+    }
+
+    subgraph cluster_remainder{
+        label = "[[1]]";
+        node [color=forestgreen];
+        edge [color=forestgreen]
+        ogg -- bogg -- sogg -- togg;
+    }
+}

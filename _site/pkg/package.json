@@ -1,0 +1,15 @@
+{
+  "name": "dentritic_calculus",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "dentritic_calculus_bg.wasm",
+    "dentritic_calculus.js",
+    "dentritic_calculus.d.ts"
+  ],
+  "main": "dentritic_calculus.js",
+  "types": "dentritic_calculus.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

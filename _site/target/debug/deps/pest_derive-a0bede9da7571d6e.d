@@ -1,0 +1,5 @@
+C:\Users\Riccardo\Prog2\dentritic_calculus\target\debug\deps\pest_derive-a0bede9da7571d6e.dll: C:\Users\Riccardo\.cargo\registry\src\index.crates.io-6f17d22bba15001f\pest_derive-2.7.12\src\lib.rs
+
+C:\Users\Riccardo\Prog2\dentritic_calculus\target\debug\deps\pest_derive-a0bede9da7571d6e.d: C:\Users\Riccardo\.cargo\registry\src\index.crates.io-6f17d22bba15001f\pest_derive-2.7.12\src\lib.rs
+
+C:\Users\Riccardo\.cargo\registry\src\index.crates.io-6f17d22bba15001f\pest_derive-2.7.12\src\lib.rs:

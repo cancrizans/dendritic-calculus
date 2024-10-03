@@ -1,3 +1,8 @@
+---
+layout: page
+---
+{% raw %}
+
 <script type="text/javascript" id="MathJax-script" async
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
 </script>
@@ -577,3 +582,5 @@ won't actually loop forever, but will instead crash as it has detected the obvio
 ```
 
 It seems like [infinite loop detection is not that easy](https://en.wikipedia.org/wiki/Halting_problem), somehow.
+
+{% endraw %}

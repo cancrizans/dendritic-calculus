@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en"><head></head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" href="/assets/css/style.css"><script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+<script type="text/javascript">
+    window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+</script></head>
+<body><main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+    <h1 class="post-title"></h1>
+  </header>
+
+  <div class="post-content">
+    
+<script type="text/javascript" id="MathJax-script" async="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script type="text/javascript">
+    window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        }
+      };
+</script>
+
+<p><strong>Dendritic Calculus</strong> is an <a href="https://esolangs.org/wiki/Main_Page">esoteric programming language</a> with one single register whose value is an unlabeled rooted tree. No other memory is available. Only two arithmetic operations may be applied in place to the register, plus a simple control loop. Nevertheless, it is Turing complete.</p>
+
+<p>DC is influenced by <a href="https://en.wikipedia.org/wiki/FRACTRAN">FRACTRAN</a> and the <a href="https://en.wikipedia.org/wiki/Iota_and_Jot">Iota and Jot</a> languages. It also is probably strongly related to <a href="https://en.wikipedia.org/wiki/Counter_machine">counter machines</a>.</p>
+
+<h1 id="dendrons">Dendrons</h1>
+
+<p>A <strong>dendron</strong> is a data structure that can be defined inductively, alongside a naming scheme:</p>
+
+<ul>
+  <li>$0$ is the empty dendron, containing only the root node with no children. It has depth 0.</li>
+  <li>If $α$ is a dendron, then $[α]$ is the dendron with $α$ as its only child. The brackets can be called an exponential, and they increase depth by one.</li>
+  <li>If $\alpha$, $\beta$, $\gamma$… are dendrons, then the sum $α+β+γ+\ldots$ is the dendron obtained by merging their roots. Order of children doesn’t matter, so sum is commutative. $α+0 = α$, so the empty dendron is really a zero. The depth is the maximum of the depths.</li>
+</ul>
+
+<p>We can also define a multiplication between two dendrons:</p>
+
+<ul>
+  <li>$α0 = 0α = 0$</li>
+  <li>Multiplication is commutative and distributes over addition both on the left and on the right, i.e. $(α+β)γ = αγ+βγ$ and $α(β+γ)= αβ+αγ$.</li>
+  <li>Product of exponentials sums the exponents: $[α][β] = [α+β]$</li>
+</ul>
+
+<p>We can see $[0]$, a.k.a. $[]$, is the multiplicative identity, so we can call it $1$. Then, $1+1$ can be called $2$, $1+1+1$ is $3$, and so on. Thus, regular numbers are represented as dendrons with only that number of leaf children.</p>
+
+<p><img src="img/sample_dendrons.png" alt="" /></p>
+
+<p>A dendron $\alpha$ with distinct children $\beta_1,\beta_2,\ldots$, each appearing $c_0,c_1,\ldots$ times, can be written like this:</p>
+
+\[α = c_0 [β_0] + c_1 [β_1] + ... + c_n [β_n]\]
+
+<p>We call this <strong>normal form</strong>. If we continue writing also the children in normal form, and so on until we terminate, we are able to write any dendron in terms of a compact, finite expression involving only the ASCII symbols <code class="language-plaintext highlighter-rouge">[]+</code> and the digits <code class="language-plaintext highlighter-rouge">0-9</code>; this is the grammar used to express dendron literals in DC.</p>
+
+<p>In the graphical equivalent of normal form, we represent duplicate children with a circle with the number of copies. For example the following dendrons are the same:</p>
+
+<p><img src="img/normal_form.png" alt="" /></p>
+
+<h3 id="order">Order</h3>
+
+<p>There is a a natural total order on dendrons: for two dendrons $\alpha$ and $\beta$ either one is bigger, or they are identical. This order can be defined through these properties:</p>
+
+<ul>
+  <li>$\alpha &lt; [\alpha]$</li>
+  <li>If $\alpha &lt; \beta$, then $\alpha + \gamma &lt;  \beta + \gamma$</li>
+  <li>If $\alpha &lt; \beta$ and $\gamma \neq 0$, then $\alpha \gamma &lt; \beta \gamma$</li>
+</ul>
+
+<p>The smallest dendrons go like this:</p>
+
+\[0 &lt; 1 &lt; 2 &lt; 3 &lt; \ldots &lt; [1] &lt; [1]+1 &lt; [1]+2 &lt; \ldots &lt; [2]  &lt; [2] + 1&lt; \ldots\]
+
+<p>This is a well-ordering, meaning any collection of dendrons has a least element.</p>
+
+<h3 id="mathematical-detail">Mathematical Detail</h3>
+
+<p>These finite rooted trees are just ordinal numbers (specifically, they are ordinals $&lt;\varepsilon_0$). However, the addition and multiplication operations are not the standard ordinal operations, but rather Hessenberg’s “natural sum” $\oplus$ and “natural product” $\otimes$, which are indeed commutative, associative, distributive and increasing monotonic (but not continuous). The correspondence is this:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Dendritic</th>
+      <th>Ordinal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>$0$</td>
+      <td>$0$</td>
+    </tr>
+    <tr>
+      <td>$[α]$</td>
+      <td>$\omega^\alpha$</td>
+    </tr>
+    <tr>
+      <td>$α+β$</td>
+      <td>$\alpha \oplus \beta$</td>
+    </tr>
+    <tr>
+      <td>$αβ$</td>
+      <td>$\alpha \otimes \beta$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>For ease of typing and legibility, and I guess for the rule of cool, I’ll use the custom notation on the left and keep calling these dendrons.</p>
+
+<p>I’ve also resisted the temptation to allow a shorthand like $\omega$ or <code class="language-plaintext highlighter-rouge">w</code> for $[1]$, since it makes much of the algebra harder to follow; e.g., I think $[1] \cdot [1] = [2]$ is easier to understand than $\omega \cdot \omega = [2]$.</p>
+
+<h1 id="programs">Programs</h1>
+
+<p>Dendritic calculus has only one register, called $ξ$ or <strong>The</strong> register, containing a dendron that can be manipulated. There are no variables and it is not possible to store any other data elsewhere.</p>
+
+<p>A program is a sequence of operations that are applied to ξ in place. The instruction set has only three entries:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Instruction</th>
+      <th>Arguments</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Increment</strong></td>
+      <td>$\kappa$</td>
+      <td>Add a constant $\kappa$ to $ξ$.</td>
+    </tr>
+    <tr>
+      <td><strong>Division-Substitution</strong></td>
+      <td>$\pi$, $\sigma$</td>
+      <td>Match a pattern $\pi$ within $ξ$ and replace with $\sigma$ (sorta).</td>
+    </tr>
+    <tr>
+      <td><strong>Prune Loop</strong></td>
+      <td><code class="language-plaintext highlighter-rouge">&lt;code block&gt;</code></td>
+      <td>While it is possible to do so, decrement $ξ$ and execute a block of code.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>By default, the state is initialized as $\xi=0$.</p>
+
+<p>There are no special provisions for I/O, only the initial and final states exist. If input is defined, it can be passed in some encoding into the initial value of the register with some (arbitrary) convention relating to the type. A single integer $n$ is directly the dendron $n$, while a list of number could be passed in as the coefficients of $1$, $[1]$, $[2]$, etc. The same is true for the output.</p>
+
+<h2 id="increment">Increment</h2>
+
+<p>To add a constant dendron to the register, $ξ \leftarrow ξ + κ$, we can write</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+= κ
+</code></pre></div></div>
+
+<h2 id="division-substitution">Division-Substitution</h2>
+
+<p>Division-substitution of  pattern $π &gt; 0$ with replacement $σ$ is written</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/ π &gt; σ
+</code></pre></div></div>
+
+<p>The operation applied is this:</p>
+<ol>
+  <li>Divide $\xi$ by $\pi$, producing a quotient $\psi$ and a remainder $\rho$, so that we have $\xi = \psi \cdot \pi \, + \,\rho$,</li>
+  <li>set $\xi \leftarrow \psi \cdot \sigma + \rho$</li>
+</ol>
+
+<p>Very informally and imprecisely, this is a sort of “find and replace”: the division “searches” the pattern $\pi$ within $\xi$, counting the “number of occurrences” $\psi$ (which is really not a number but a dendron, since $\pi$ could appear “infinite times”), replacing those occurrences with $\sigma$, all the while leaving the non-matching part $\rho$ untouched.</p>
+
+<p>To say that $\pi$ <em>divides</em> $\xi$ in terms of trees means we can find $\pi$ as a subtree of $\xi$ with the same root and whose leaves are also leaves of $\xi$. The remainder $\rho$, the part <em>not divisible</em> by $\pi$, is that not covered by any match. The quotient $\psi$, in a sense, parametrizes the matches.</p>
+
+<p><img src="img/division.png" alt="" /></p>
+
+<p><em>Dividing $[1] + [[1]+1]$ by $[1]$ graphically. We can find $[1]$ in the original dendron (matching both root and leaves) twice, covering the red part. The red part is equal to $[1] \cdot 2$, so $2$ is the quotient. The green part, the remainder, cannot be divided by $[1]$.</em></p>
+
+<p>In the implementation details section we define rigorously dendritic division in the general case, but in all practical situations we’ll want $\pi$ and $\sigma$ to be exponentials, i.e., they have one child: $\tau=[\phi]$, $\sigma=[\zeta]$, as this is sufficient for Turing completeness. Write the register in normal form:</p>
+
+\[\xi = c_1 [\beta_1] + \ldots + c_n[\beta_n]\]
+
+<p>Then $/[\phi]\rightarrow [\zeta]$ replacement acts on each term separately, distributing over the sum (this is false for general divisors). For each term $[\beta_1]$, intuitively, we can divide it by $[\phi]$ if and only if we can subtract $\phi$ from $\beta$, in which case we do so and replace it with $\zeta$, otherwise we leave it alone. The substitution acts as</p>
+
+\[[\beta]/[\phi]\rightarrow [\zeta] = \begin{cases}
+    [\beta-\phi + \zeta] &amp; \text{if $\beta-\phi$ ``makes sense''}\,,\\
+    [\beta] &amp; \text{otherwise}
+\end{cases}\]
+
+<p>Bla bla bla, let’s see an example. Consider the register in state:</p>
+
+\[\xi = 3 \big[[1]+1\big] + 5 \big[[1]\big] + 7[2] + 3[1] + 8\]
+
+<p>And we apply the division-substitution $/[1]\rightarrow 1$. (Note $1 = [0]$ is an exponential with exponent $0$). This substitution therefore attempts to subtract one from each exponent in the normal form. For example, $[1]+1 - 1=[1]$ succeeds, while $[1]-1$ fails. So the state of the register becomes</p>
+
+\[\xi = 3 \big[[1]\big] + 5 \big[[1]\big] + 7[1] + 3 + 8 \\
+  \quad \\
+  = 8 \big[[1]\big] + 7[1] + 11\]
+
+<h3 id="multiplication">Multiplication</h3>
+
+<p>Note that if the pattern is $1$, which always divides any dendron, then we are effectively just multiplying the whole register by $\sigma$. We can therefore implement multiplication by a constant $\xi \leftarrow \sigma \cdot \xi$ as</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/ 1 &gt; σ
+</code></pre></div></div>
+
+<h2 id="prune-loop">Prune Loop</h2>
+
+<p>This is simply written with curly braces around some code block:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+    &lt;code block&gt;
+}
+</code></pre></div></div>
+
+<p>It’s a while decrement loop. Since decrementing is a fallible operation, as $\xi-1$ may not make sense, for example for $\xi = [1]$, we break out of the loop as soon as decrementing becomes impossible. In pseudocode:</p>
+
+<ul>
+  <li>while the root has a child which is a leaf:
+    <ul>
+      <li>trim it</li>
+      <li>Execute <code class="language-plaintext highlighter-rouge">&lt;code block&gt;</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>or, in algebraic terms:</p>
+
+<ul>
+  <li>while $\xi = \alpha + 1$ for some $\alpha$:
+    <ul>
+      <li>$\xi \leftarrow \alpha$</li>
+      <li>Execute <code class="language-plaintext highlighter-rouge">&lt;code block&gt;</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>A common pattern is to use the prune loop to transfer the finite part to the coefficient of any other term by incrementing it while you drain the finite part, e.g., this computes $n \mapsto n[1]$:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{ += [1] }
+</code></pre></div></div>
+
+<p>It is also possible to implement the exponential on naturals $n \mapsto [n]$ like this</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>; input n
++= [[1]]            
+{ / [[1]] &gt; [[1]+1] } 
+/ [[1]] &gt; 1          
+</code></pre></div></div>
+
+<p>I’ll leave decrypting this one to you.</p>
+
+<h2 id="syntax">Syntax</h2>
+
+<p>Dendritic calculus programs are written in ASCII using the following character set:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">+=/&gt;</code> for commands</li>
+  <li><code class="language-plaintext highlighter-rouge">[]+0123456789</code> for dendron literals ()</li>
+  <li><code class="language-plaintext highlighter-rouge">{}</code> for prune loops</li>
+</ul>
+
+<p>whitespace is ignored. It is not necessary to introduce any symbols for variables since DC is “point-free programming” in the ridiculous sense that there is only one register, so there’s no addressing to speak of.</p>
+
+<p>Due to the influence of assembly, we also allow comments between <code class="language-plaintext highlighter-rouge">;</code> and a newline.</p>
+
+<!-- After stripping comments and ignoring whitespace, the grammar is unambiguous:
+
+```
+program := command*
+
+command :=  "+=" literal
+        |   "/" literal ">" literal
+        |   "{" program "}"
+
+literal :=  term ("+" term)+
+term    :=  (pos_nat)? exp
+pos_nat :=  ("1".."9")("0"-"9")*
+exp     :=  "0" | "1" | "[" literal "]"
+``` -->
+
+<h1 id="sample-programs">Sample Programs</h1>
+
+<h2 id="triangular-numbers">Triangular numbers</h2>
+
+<p>This computes the $n$-th triangular number, $n \mapsto 1+2+\ldots+n$.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>; input n
++= 1 {                  ; for finite in n..=0
+    {+= [2[1]]}          
+    / [2[1]] &gt; [1]+1    ; clone value
+    {+= [[1]]}          ; add copy to accumulator
+    / [1] &gt; 1           ; restore copy, keep accumulator
+}
+/ [[1]] &gt; 1         ; output
+</code></pre></div></div>
+
+<h2 id="decimal-digits">Decimal digits</h2>
+
+<p>This unpacks a natural number $n$ into a list of decimal digits (or any base, by replacing 10):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>; takes an integer as input
+; returns buffer of decimal digits
+
+/1 &gt; [[1]] + [[2]]      ; put number in digits buffer [[1]] and last quotient [[2]]
++= 1{{}                 ; loop until flag zero
+    /10 &gt; [1]           ; shift-divide both digits and lq
+    
+    /[[2]+1] &gt; [[3]]    ; temp stash lq/10
+    /[[2]] &gt; 0          ; discard lq%10
+    /[[3]] &gt; [[2]]      ; put lq &lt;- lq/10
+
+    /[[2]] &gt; [[2]]+1    ; copy lq to flag
+}
+/[[1]] &gt; 1              ; clean up digits buffer to finite
+</code></pre></div></div>
+
+<p>Same program as a procedure on ordinals, starting from $\xi \leftarrow n$:</p>
+
+<ul>
+  <li>$\xi \leftarrow (\xi \cdot \omega^{\omega}+\omega^{\omega^{2}})$</li>
+  <li>$\xi \leftarrow \xi + 1$</li>
+  <li>while $\xi = \alpha + 1$: do $\xi \leftarrow \alpha$
+    <ul>
+      <li>$\xi \leftarrow \lfloor \xi \rfloor$</li>
+      <li>$\xi \leftarrow \xi \Big/ \left(10 \rightarrow \omega\right) $</li>
+      <li>$\xi \leftarrow \xi \Big/ \left(\omega^{1+\omega^{2}} \rightarrow \omega^{\omega^{3}}\right) $</li>
+      <li>$\xi \leftarrow \xi \Big/ \left(\omega^{\omega^{2}} \rightarrow 0\right) $</li>
+      <li>$\xi \leftarrow \xi \Big/ \left(\omega^{\omega^{3}} \rightarrow \omega^{\omega^{2}}\right) $</li>
+      <li>$\xi \leftarrow \xi \Big/ \left(\omega^{\omega^{2}} \rightarrow 1+\omega^{\omega^{2}}\right) $</li>
+    </ul>
+  </li>
+  <li>$\xi \leftarrow \xi \Big/ \left(\omega^{\omega} \rightarrow 1\right) $</li>
+</ul>
+
+<h2 id="hello-world-no-digits">Hello, world! (No digits)</h2>
+
+<p>It’s too easy to make a “Hello, world!” program in standard DC. Here’s a version without using any digits:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/[]&gt;[]+[]+=[]+[[]]+[[]+[]]+[[]+[]+[]]+[[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]&gt;[]+[]+=[[]]+[[]+[]]+[[]+[]+[]]+[[]+[]+[]+[]]+[[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]&gt;[]+[]+=[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]&gt;[]+[]+=[]+[[]+[]]+[[]+[]+[]]+[[]+[]+[]+[]]+[[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]&gt;[]+[]+=[[]]+[[]+[]]+[[]+[]+[]]+[[]+[]+[]+[]]+[[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]&gt;[]+[]+=[[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]]/[]&gt;[]+[]+=[[]]+[[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]]+[[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]+[]]
+</code></pre></div></div>
+
+<h1 id="turing-completeness-proof">Turing Completeness Proof</h1>
+
+<p>It is possible to transpile a brainfuck program to Dentritic Calculus, which proves that the latter is Turing complete. Specifically, we will realize bf with a doubly infinite memory tape with unbounded cells.</p>
+
+<p>There’s probably easier Turing-complete systems to reduce to (probably Minsky machines, for example), and better proofs than this one that use smaller dendrons, but this is the first I found and it works fine.</p>
+
+<h2 id="encoding-state">Encoding State</h2>
+
+<p>First, note that the bf state (composed of both the tape and pointer) can be encoded as a pair of finite sequences: $(c, r_1, r_2, r_3, …, r_{R})$ and $(l_1, l_2 ,l_3, …, l_L)$, where $c$ is the value of the pointed cell, $r_1$ is the value of the cell on the right of it, $l_1$ is the one on the left, and so on. At any time the sequences are finite, since only a finite number of cells will be non-zero.</p>
+
+<p>We encode each sequence as a dendron:</p>
+
+\[α = c + r_1 [1] + r_2 [2] + r_3 [3] + ... + r_R [R] \\
+β = l_1 + l_2 [1] + l_3 [2] + l_4 [3] + ... + l_L [L-1]\]
+
+<p>Both $α$ and $β$ are always smaller than $[[1]]$, so we can encode both into a single register with no overlap:</p>
+
+\[ξ = [[1]] β + α\]
+
+<p>Graphically, something like this (circle with label $n$ means the child is cloned $n$ times):</p>
+
+<p><img src="img/bf_state.png" alt="" /></p>
+
+<p><em>Brainfuck tape embedded into a dendron</em></p>
+
+<h2 id="increment-and-decrement">Increment and decrement</h2>
+
+<p>Since the pointed cell value is always the finite part (coefficient of $1$), it’s pretty easy to increment it:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+= 1
+</code></pre></div></div>
+
+<p>In bf, decrementing a zeroed cell is undefined behaviour, so we can assume that when <code class="language-plaintext highlighter-rouge">-</code> is called the cell is non-zero. To decrement, we can perform a maneouver to only run one iteration of the prune loop:</p>
+
+<ul>
+  <li>start prune loop</li>
+  <li>immediately move the finite part into a temporary (using another loop)</li>
+  <li>(loop breaks because the finite part is now zero)</li>
+  <li>substitute to move the finite part back in place</li>
+</ul>
+
+<p>In code, the <code class="language-plaintext highlighter-rouge">-</code> instruction can be realized as</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{                       ; decrement c
+    { += [2[1]] }        ; transfer c to coefficient of [2[1]]
+}                       ; can't decrement - loop breaks
+
+/ [2[1]] &gt; 1             ; move c back to the finite part
+</code></pre></div></div>
+
+<p>Since <code class="language-plaintext highlighter-rouge">[2[1]]</code> is larger than the <code class="language-plaintext highlighter-rouge">[[1]]</code> we used for encoding the state, the substitution will not clobber <code class="language-plaintext highlighter-rouge">α</code> and <code class="language-plaintext highlighter-rouge">β</code>.</p>
+
+<h2 id="pointer-move">Pointer Move</h2>
+
+<p>We can implement bf <code class="language-plaintext highlighter-rouge">&lt;</code> and <code class="language-plaintext highlighter-rouge">&gt;</code> in terms of pop and push operations on <code class="language-plaintext highlighter-rouge">α</code> and <code class="language-plaintext highlighter-rouge">β</code>.</p>
+
+<h3 id="swap-buffers">Swap Buffers</h3>
+
+<p>First, we need a way to swap <code class="language-plaintext highlighter-rouge">α</code> with <code class="language-plaintext highlighter-rouge">β</code>. This program accomplishes this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>; SWAP
+/ 1 &gt; [[1]]     ; move α from 1 to [[1]] and β from [[1]] to [2[1]]
+/ [2[1]] &gt; 1    ; move β from [2[1]] to 1
+</code></pre></div></div>
+
+<p>The first multiply moves <code class="language-plaintext highlighter-rouge">α</code> from being the coefficient of <code class="language-plaintext highlighter-rouge">1</code> to that of <code class="language-plaintext highlighter-rouge">[[1]]</code>, while moving  <code class="language-plaintext highlighter-rouge">β</code> from being the coefficient of <code class="language-plaintext highlighter-rouge">[[1]]</code> to that of its square, which is <code class="language-plaintext highlighter-rouge">[2[1]]</code>. The substitution then puts <code class="language-plaintext highlighter-rouge">β</code> as the coefficient of <code class="language-plaintext highlighter-rouge">1</code>.</p>
+
+<h3 id="shift-buffers">Shift Buffers</h3>
+
+<p>Then we could use some utility functions to shift one of <code class="language-plaintext highlighter-rouge">α</code> or <code class="language-plaintext highlighter-rouge">β</code> without affecting the other one. With a trick, we can shift <code class="language-plaintext highlighter-rouge">α</code> one place right:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>; SHIFT_ALPHA_RIGHT
+/ 1 &gt; [1]             ; shifts α and β right by one
+/ [[1]+1] &gt; [[1]]     ; shifts β left by one
+</code></pre></div></div>
+
+<p>The final effect is $(c, r_1, r_2, r_3, \ldots) \rightarrow (0, c, r_1, r_2,\ldots)$.</p>
+
+<p>We can instead directly shift <code class="language-plaintext highlighter-rouge">β</code> to the left with a sub:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>; SHIFT_BETA_LEFT
+/ [[1]+1] &gt; [[1]]
+</code></pre></div></div>
+
+<p>which performs $(l_1, l_2, l_3, \ldots) -&gt; \big(l_1+l_2, l_3, l_4, \ldots\big)$ (more useful if $l_1$ happens to be already zero).</p>
+
+<h3 id="move-pointer">Move Pointer</h3>
+
+<p>Finally, this is the implementation of bf <code class="language-plaintext highlighter-rouge">&lt;</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>; BF_MOVE_LEFT
+                    ; α = (c  r1 r2 ...),  β = (l1 l2 l3 ...)
+SHIFT_ALPHA_RIGHT   ; α = (0  c  r1 ...),  β = (l1 l2 l3 ...)
+SWAP                ; α = (l1 l2 l3 ...),  β = (0  c  r1 ...)
+{+= [[1]]}          ; α = (0  l2 l3 ...),  β = (l1 c  r1 ...)
+SWAP                ; α = (l1 c  r1 ...),  β = (0  l2 l3 ...)
+SHIFT_BETA_LEFT     ; α = (l1 c  r1 ...),  β = (l2 l3 l4 ...)
+</code></pre></div></div>
+
+<p>To move the pointer right, we can conjugate this with SWAP:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>; BF_MOVE_RIGHT
+
+SWAP
+BF_MOVE_LEFT
+SWAP
+</code></pre></div></div>
+
+<h2 id="brackets">Brackets</h2>
+
+<p>The bf <code class="language-plaintext highlighter-rouge">[]</code> operator is relatively similar to dendritic <code class="language-plaintext highlighter-rouge">{}</code>, the only difference is it doesn’t automatically decrement. We can correct this by incrementing again. The bf code <code class="language-plaintext highlighter-rouge">[&lt;code_block&gt;]</code> converts to</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{
+    + 1
+    &lt;code_block&gt;
+}
+</code></pre></div></div>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>We have converted bf to DC, therefore the latter is Turing-complete. Combined with the self-evident theorem that dendritic calculus is horrible to program in, I can proudly confirm its status as a <a href="https://esolangs.org/wiki/Turing_tarpit">Turing tarpit</a>.</p>
+
+<h1 id="boundedness">Boundedness</h1>
+
+<p>A DC program cannot get the register to a depth greater than the depth of the constants in the program. If the depth of the constants is at most $d$, then we are really limited to the much smaller state space of dendrons of depth $&lt;=d$.</p>
+
+<p>DC0, dendritic calculus bounded to depth 0, has only one state, $0$, and no way to change it.</p>
+
+<p>DC1 is a very simple language. It only has one integer register $n$ and can do some arithmetic operations on it. Since the only branching instruction can only take the “break loop” branch if all the data is zeroed out, this is not Turing-complete. DC1 really loses on a technicality - if it was able to branch, integer division is computationally very strong.</p>
+
+<p>In DC2, the state is a dendron $\xi &lt; [[1]]$, which is to say $\xi = n_0 + n_1 [1] + n_2 [2] + \ldots$. We thus have one arbitrarily large buffer of integers, and moreover the <code class="language-plaintext highlighter-rouge">{...}</code> loop does not need to wipe all the memory to branch. While it is a bit cramped, I’m fairly certain this is Turing-complete, though I’m too lazy to conjure up a proof.</p>
+
+<p>DC3 has <em>at least</em> an infinite buffer of such infinite buffers, namely $\xi = \alpha_0 + \alpha_1 [[1]] + \alpha_2 [2[1]] + \ldots$ where each $\alpha_i$ is a DC2 state (There’s more actually, since $[[2]]\neq [2[1]]$). This is a lot of space – just three buffers, $(\alpha_0,\alpha_1,\alpha_2)$ are all we need to comfortably embed an infinite addressable tape, as we’ve seen in the brainfuck conversion.</p>
+
+<p><img src="img/bounded.png" alt="" /></p>
+
+<p><em>General state in bounded dendritic calculus. For DC3, The square nodes mean that branch is multiplied by a corresponding DC2 state.</em></p>
+
+<p>Note that this means that the exponential function $\xi \rightarrow [\xi]$ cannot be implemented by a DC program, since we could iterate it to achieve arbitrarily large depth:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+= 1 {
+    &lt;exp&gt;
+    += 1 
+}
+</code></pre></div></div>
+
+<p>Thus, the implementation <code class="language-plaintext highlighter-rouge">&lt;exp&gt;</code> cannot exist. Even though DC can compute any computable function on natural numbers, it cannot do the same on dendrons themselves.</p>
+
+<h1 id="implementation-details">Implementation Details</h1>
+
+<h2 id="subtraction">Subtraction</h2>
+
+<p>We say a dendron $\beta$ subtracts from $\alpha$ if there is a $\gamma$ such that $\alpha = \beta + \gamma$, in which case $\gamma := \alpha-\beta$ is uniquely defined.</p>
+
+<p>If $\beta$ subtracts from $\alpha$, then $\beta \leq \alpha$, but the converse is not true, since for example $1$ does not subtract from $[1]$.</p>
+
+<p>Fallible subtraction is computationally easy in normal form: $\beta$ subtracts from $\alpha$ iff the exponents of $\beta$ are a subset of those of $\alpha$ and the coefficients of the former are all less than or equal than the latter.</p>
+
+<h2 id="division">Division</h2>
+
+<p>We define the quotient $\xi / \pi$ as the largest dendron $\psi$ such that $\psi\cdot \pi$ subtracts from $\xi$; the difference $\rho = \xi - \psi \cdot \pi$ is the remainder of the division.</p>
+
+<p>This definition is sound because sum and product are strictly increasing, which means the maximum $\psi$ is attained for minimum remainder $\rho$, and any set of dendrons has a least element.</p>
+
+<p>Note the unusual fact that $\rho$ is in no meaningful (obvious) way “smaller” than the divisor $\pi$. For example, if we divide $[[1]] + 3[1]$ by $[1]$, we obtain</p>
+
+\[[[1]] + 3[1]  = \big(3\big) \cdot [1] \,\,+ \,\,[[1]]\]
+
+<p>With the “large” remainder $[[1]]$ that cannot be divided by $[1]$ (since, intuitively, it would mean $[[1]-1]$, a subtraction that fails).</p>
+
+<!-- Note that for Turing completeness, all that is needed is the case of the divisor being a multiple of an exponential $\pi = n[\phi]$, which is much simpler than the general case. In this case, $\xi$'s children "do not interact" and are divided independently: the quotient is the sum of the quotients and the remainder is the sum of the remainders.
+
+For example, take the following complex dendron
+
+$$
+\xi = 7 [[[1]+2]+4] \quad + \quad [[1]] \quad + \quad 2[3] \quad + \quad 4
+$$
+
+Dividing it by $[1]$ can be done by inspection, term by term, by attempting the fallible equation $[\phi]/[1] = [\phi-1]$, and leaving those for which it fails for the remainder:
+
+$$
+\xi = \bigg(  7[[[1]+2]+3] + 2[2] \bigg)\cdot [1] \quad + \quad \big([[1]] + 4\big)
+$$ -->
+
+<p>I’ve already explained how to divide when $\pi$ is an exponential. The general case in which $\pi$ is a sum of several terms in normal form, i.e. it has at least two children that are not identical, is much more complex to implement, but largely unnecessary. Still, I did come up with an algorithm for it:</p>
+
+<h3 id="division-implementation-algorithm">Division Implementation Algorithm</h3>
+
+<p>We have a dividend $\xi$ and divisor $\pi$, and want to compute the quotient $\psi$ and remainder $\rho$.</p>
+
+<ul>
+  <li>Write $\pi$ in normal form as $p_1 [\phi_1] + \ldots + p_n [\phi_n]$.</li>
+  <li>Set $\psi\leftarrow 0$, set $\rho\leftarrow \xi$.</li>
+  <li>Loop:
+    <ul>
+      <li>Write $\rho$ in normal form as $r_1 [\beta_1] + \ldots r_m [\beta_m]$.</li>
+      <li>Search for $i = 0\ldots n$ and $j = 0\ldots m$ (in any order) such that:
+        <ol>
+          <li>$\phi_i$ subtracts into $\beta_j$</li>
+          <li>$[\beta_j-\phi_i] \cdot \pi$ subtracts into $\rho$</li>
+        </ol>
+      </li>
+      <li>If found:
+        <ul>
+          <li>Determine largest $n$ such that $n[\beta_j-\phi_i] \cdot  \pi$ subtracts into $\rho$.</li>
+          <li>Set $\rho \leftarrow \rho - n[\beta_j-\phi_i] \cdot \pi$</li>
+          <li>Set $\psi \leftarrow \psi + n[\beta_j-\phi_i]$</li>
+        </ul>
+      </li>
+      <li>Else:
+        <ul>
+          <li>Halt.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>The algorithm is guaranteed to halt. At each loop, we either halt or decrease $\rho$ by a positive amount, since $n&gt;0$ by condition 2. Since dendrons are well-ordered, the decreasing sequence of remainders must terminate.</p>
+
+<p>Here is an example, dividing $[3]+2[2]+[1]$ by $[1]+1$.</p>
+
+<ul>
+  <li>We search for a viable pair of terms.</li>
+  <li>We find the exponent $1$ subtracts into $3$ with difference $2$, <em>and</em> $[2]\cdot([1]+1) = [3]+[2]$ subtracts into $\rho$.</li>
+  <li>The biggest $n$ is $1$.</li>
+  <li>We remove the amount $[3]+[2]$ from $\rho$ and increment $\psi$ by $[2]$.</li>
+  <li>$\rho = [2]+[1]$, $\psi = [2]$.</li>
+  <li>We search for a viable pair of terms.</li>
+  <li>We find the exponent $1$ subtracts from $2$ with difference $1$, <em>and</em> $[1]\cdot([1]+1) = [2]+[1]$ subtracts from $\rho$.</li>
+  <li>The biggest $n$ is again $1$.</li>
+  <li>We remove the amount $[2]+[1]$ from $\rho$ and increment $\psi$ by $[1]$.</li>
+  <li>$\rho = 0$, $\psi = [2]+[1]$.</li>
+  <li>There are no terms left, so the search fails, and we halt.</li>
+</ul>
+
+<p>We conclude</p>
+
+\[[3]+2[2]+[1] = \Big( [2]+[1]\Big)\cdot \Big([1]+1\Big) + 0\]
+
+<p>with no remainders.</p>
+
+<h2 id="interpretingcompilation-and-optimization">Interpreting/Compilation and Optimization</h2>
+
+<p>Dendritic calculus is very inefficient to implement on a regular computer. Trees are just fundamentally nasty objects, especially when they are nested one inside the other as exponents and have to be manipulated. My interpreter really has to be a bit of a compiler if it wants to have a chance, and with some cleverness, programs do run at an almost bearable pace.</p>
+
+<p>I think the best representation of a dendron is in normal form as a sorted map from exponents (which are dendrons themselves) to their coefficients, which are integers (I used <code class="language-plaintext highlighter-rouge">BigUint</code>, but for most cases even <code class="language-plaintext highlighter-rouge">u64</code> would do). So, I need to store:</p>
+
+\[\xi = c_0 [\beta_0] + c_1 [\beta_1] + \ldots + c_n [\beta_n]\]
+
+<p>where the $\beta_i$ are themselves dendrons, and could be pretty much anything. I need some kind of (recursive) data structure that can quickly give me the $\beta_i$ in order (both decreasing and increasing), let me query if a given $[\beta_i]$ is present and with which coefficient, and let me mutate those coefficients just as quickly. Rust’s <code class="language-plaintext highlighter-rouge">BTreeMap</code> seems like the correct choice. Because of all the nested indirection, dendrons are rather large, sprawling brambles in memory, but this doesn’t really matter since dendritic calculus only really ever needs to work with two or three of them at a time.</p>
+
+<p>The first obvious optimization, slash, compilation step is to just pre-compute the constant dendrons that appear in instructions. This came more or less free with the design of the interpreter, but I don’t think it really is that life-changing; it does help for instructions inside loops. I’m fairly certain the biggest win here is in the overhead of memory allocation.</p>
+
+<p>You might also think to do obvious shifting window stuff with addition and multiplication like this:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>instructions</th>
+      <th>optimized</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">+=κ +=γ</code></td>
+      <td><code class="language-plaintext highlighter-rouge">+=(κ+γ)</code></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">+=κ /1&gt;μ +=γ</code></td>
+      <td><code class="language-plaintext highlighter-rouge">/1&gt;μ +=(μ*κ+γ)</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>and so on and so forth, but in practice these are pretty rare. The programmer is already deep enough in the tarpit that they’re not gonna write any of these anyway.</p>
+
+<p>There are some common patterns that are the only or most obvious way to achieve something but are just really slow to execute. For example, this code</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{+=[[1]]}
+</code></pre></div></div>
+
+<p>is the best way to transfer the finite part of the register to the coefficient of $[[1]]$ without clobbering anything else, but it requires stepping through as many iterations as the <em>value that’s being transferred</em>, rendering this simple move operation a whopping $\mathcal{O}(e^n)$. I secretly compile this code to a single $\mathrm{mvf}([[1]])$ (move finite) instruction.</p>
+
+<p>There is also some very basic infinite loop detection, for example</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{+=1}
+</code></pre></div></div>
+
+<p>won’t actually loop forever, but will instead crash as it has detected the obvious infinite loop. But a sightly more complex trap can fool it:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{ +=[1]  /[1]&gt;1 }
+</code></pre></div></div>
+
+<p>It seems like <a href="https://en.wikipedia.org/wiki/Halting_problem">infinite loop detection is not that easy</a>, somehow.</p>
+
+
+  </div>
+
+</article>
+      </div>
+    </main></body>
+
+</html>
